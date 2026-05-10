@@ -67,37 +67,37 @@
 
         /* Game Balloons */
         .balloon {
-    width: 60px;
-    height: 75px;
-    background: #ff6b6b;
-    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; /* This gives it the balloon shape */
-    position: absolute;
-    bottom: -100px;
-    cursor: pointer;
-    box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1); /* Adds depth */
-}
+         width: 60px;
+         height: 75px;
+         background: #ff6b6b;
+         border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; /* This gives it the balloon shape */
+         position: absolute;
+         bottom: -100px;
+         cursor: pointer;
+         box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1); /* Adds depth */
+         }
 
 /* The string of the balloon */
-.balloon::after {
-    content: "";
-    position: absolute;
-    bottom: -25px;
-    left: 30px;
-    height: 25px;
-    width: 1px;
-    background: rgba(0,0,0,0.2);
-}
+         .balloon::after {
+         content: "";
+         position: absolute;
+         bottom: -25px;
+         left: 30px;
+         height: 25px;
+         width: 1px;
+         background: rgba(0,0,0,0.2);
+         }
 
 /* The little knot at the bottom */
-.balloon::before {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 26px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 6px solid inherit; /* Match the balloon color */
-}
+        .balloon::before {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 26px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 6px solid inherit; /* Match the balloon color */
+        }
 
         /* The Letter Card */
         .letter-card {
