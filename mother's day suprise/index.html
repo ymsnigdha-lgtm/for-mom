@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surprise for Mumma!</title>
+    <title>Surprise for Amma!</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff5f8; text-align: center; margin: 0; overflow: hidden; }
         
@@ -17,17 +17,19 @@
             to { transform: translateY(-110vh) translateX(20px); }
         }
 
-        .photo-card { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-bottom: 30px solid white; border-radius: 5px; z-index: 5; }
-        .photo-card img { width: 250px; height: auto; border-radius: 3px; }
+        .photo-card { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 10px; z-index: 20; }
+        .photo-card img { max-width: 280px; height: auto; border-radius: 5px; }
 
-        #final-letter { display: none; padding: 40px; }
-        button { padding: 15px 30px; font-size: 1.2rem; background: #ff4757; color: white; border: none; border-radius: 30px; cursor: pointer; }
+        #final-letter { display: none; padding: 40px; height: 100vh; overflow-y: auto; background: white; }
+        button { padding: 15px 30px; font-size: 1.2rem; background: #ff4757; color: white; border: none; border-radius: 30px; cursor: pointer; margin-top: 15px; }
+        
+        .close-btn { background: #333; padding: 8px 15px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
-        <h1>Hey Mumma! ❤️</h1>
+        <h1>Hii Amma! ❤️</h1>
         <p>Click below to start the magic</p>
         <button onclick="startGame()">Start the Magic ✨</button>
     </div>
@@ -36,20 +38,27 @@
 
     <div id="photo-reveal" class="photo-card">
         <img id="current-img" src="" alt="Memory">
-        <p id="caption">Growing up with you is my fav part!</p>
+        <p id="caption"></p>
+        <button class="close-btn" onclick="nextStep()">Close & Next Balloon 🎈</button>
     </div>
 
     <div id="final-letter">
         <h1>Happy Mother's Day!</h1>
-        <p>You're the best thing that's ever happened to me. Love you, Mumma!</p>
+        <p>You're the best thing that's ever happened to me. I'm so grateful for your love, support, and guidance. You are my rock and my role model.</p>
+        <p><strong>Love you, Amma! ❤️</strong></p>
+        <button onclick="location.reload()">Watch Again</button>
     </div>
 
     <script>
+        // FIXED: Using your actual filenames from the folder
         const photos = [
-            "https://via.placeholder.com/250/FF6B6B/FFFFFF?text=Photo+1", 
-            "https://via.placeholder.com/250/4834D4/FFFFFF?text=Photo+2",
-            "https://via.placeholder.com/250/6AB04C/FFFFFF?text=Photo+3"
+            { src: "photo1.jpeg", msg: "Our favorite memory!" },
+            { src: "photo3.jpeg", msg: "You look like a Diva here! ✨" },
+            { src: "photo2.jpeg", msg: "Growing up with you is my fav part!" },
+            { src: "photo4.jpeg", msg: "Throwback to this special day 📸" },
+            { src: "photo5.jpeg", msg: "Love you forever, Amma!" }
         ];
+
         let currentPhotoIndex = 0;
 
         function startGame() {
@@ -59,34 +68,41 @@
 
         function createBalloons() {
             const gameArea = document.getElementById('game-area');
-            for (let i = 0; i < 5; i++) {
+            gameArea.innerHTML = ""; // Clear area
+            for (let i = 0; i < photos.length; i++) {
                 let b = document.createElement('div');
                 b.className = 'balloon';
-                b.style.left = Math.random() * 80 + '%';
-                b.style.animationDelay = (i * 1.5) + 's';
+                // Spread balloons across screen
+                b.style.left = (10 + (i * 18)) + '%'; 
+                b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`;
+                b.style.animationDelay = (i * 0.5) + 's';
                 b.onclick = () => popBalloon(b);
                 gameArea.appendChild(b);
             }
         }
 
         function popBalloon(element) {
-            element.style.display = 'none';
+            element.style.visibility = 'hidden';
+            const card = document.getElementById('photo-reveal');
+            document.getElementById('current-img').src = photos[currentPhotoIndex].src;
+            document.getElementById('caption').innerText = photos[currentPhotoIndex].msg;
+            card.style.display = 'block';
+        }
+
+        function nextStep() {
+            const card = document.getElementById('photo-reveal');
+            card.style.display = 'none';
+            currentPhotoIndex++;
             
-            if (currentPhotoIndex < photos.length) {
-                const card = document.getElementById('photo-reveal');
-                document.getElementById('current-img').src = photos[currentPhotoIndex];
-                card.style.display = 'block';
-                
-                setTimeout(() => {
-                    card.style.display = 'none';
-                    currentPhotoIndex++;
-                    if (currentPhotoIndex === photos.length) showLetter();
-                }, 2000);
+            if (currentPhotoIndex === photos.length) {
+                showLetter();
             }
         }
 
         function showLetter() {
+            document.getElementById('game-area').style.display = 'none';
             document.getElementById('final-letter').style.display = 'block';
+            document.body.style.overflow = 'auto'; // Allow scrolling for the letter
         }
     </script>
 </body>
