@@ -5,104 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surprise for Amma!</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #fff5f8; text-align: center; margin: 0; overflow: hidden; }
-        
-        #start-screen { position: fixed; width: 100%; height: 100%; background: white; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        
-        .balloon { width: 60px; height: 80px; background: #ff6b6b; border-radius: 50%; position: absolute; bottom: -100px; cursor: pointer; animation: floatUp 6s linear infinite; }
-        .balloon::before { content: ""; position: absolute; bottom: -10px; left: 25px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 10px solid #ff6b6b; }
-
-        @keyframes floatUp {
-            from { transform: translateY(0) translateX(0); }
-            to { transform: translateY(-110vh) translateX(20px); }
+        /* Base Styling & Background */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            /* Light Pink & Gold Gradient */
+            background: linear-gradient(135deg, #fff0f5 0%, #fdfcf0 100%);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
         }
 
-        .photo-card { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-radius: 10px; z-index: 20; }
-        .photo-card img { max-width: 280px; height: auto; border-radius: 5px; }
+        /* Floating Background Elements (Ballons/Sparkles) */
+        .bg-element {
+            position: absolute;
+            user-select: none;
+            z-index: 0;
+            animation: floatBackground 10s linear infinite;
+            opacity: 0.6;
+        }
 
-        #final-letter { display: none; padding: 40px; height: 100vh; overflow-y: auto; background: white; }
-        button { padding: 15px 30px; font-size: 1.2rem; background: #ff4757; color: white; border: none; border-radius: 30px; cursor: pointer; margin-top: 15px; }
-        
-        .close-btn { background: #333; padding: 8px 15px; font-size: 0.9rem; }
+        @keyframes floatBackground {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-20vh) rotate(360deg); }
+        }
+
+        /* Screens */
+        #start-screen, #final-letter {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #game-area {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
+            display: none;
+        }
+
+        /* Buttons */
+        button {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #d4af37, #f9e27d); /* Gold Gradient */
+            color: #5a4a42;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+
+        /* Game Balloons */
+        .game-balloon {
+            width: 70px;
+            height: 90px;
+            background: #ffb6c1;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -100px;
+            cursor: pointer;
+            z-index: 15;
+            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.1);
+        }
+
+        /* The Letter Card */
+        .letter-card {
+            background: white;
+            max-width: 85%;
+            width: 450px;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            border: 2px solid #f9e27d; /* Gold Border */
+        }
+
+        #letter-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
+        .photo-popup {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        }
+        .photo-popup img { max-width: 280px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
+    <div id="bg-layer"></div>
+
     <div id="start-screen">
-        <h1>Hii Amma! ❤️</h1>
-        <p>Click below to start the magic</p>
+        <h1 style="color: #d4af37;">Hii Amma! ❤️</h1>
+        <p style="color: #a38d81;">మీ కోసం ఒక చిన్న సర్‌ప్రైజ్...</p>
         <button onclick="startGame()">Start the Magic ✨</button>
     </div>
 
     <div id="game-area"></div>
 
-    <div id="photo-reveal" class="photo-card">
+    <div id="photo-reveal" class="photo-popup">
         <img id="current-img" src="" alt="Memory">
-        <p id="caption"></p>
-        <button class="close-btn" onclick="nextStep()">Close & Next Balloon 🎈</button>
+        <p id="caption" style="font-style: italic; color: #5a4a42;"></p>
+        <button onclick="nextStep()" style="font-size: 0.9rem; padding: 10px 20px;">Next Balloon 🎈</button>
     </div>
 
-    <div id="final-letter">
-        <h1>For you, Amma!</h1>
-        <p>Amma,I was thinking about you all morning and decided to send you a little surprise to make your day even more special.  I hope this gift brings a smile to your face. You deserve it all,not just today,but everyday.I'm so grateful for everything you do for our family and for being such an incredible role model. You're the best thing that's ever happened to me. Your love, support, and guidance mean the world to me, and I feel so lucky to have you in my life. I hope you know how much I love you, Ammma. Happy Mother's Day!!</p>
-        <p><strong>Love you, Amma! ❤️</strong></p>
-        <button onclick="location.reload()">Watch Again</button>
-    </div>
+    <div id="final-letter" style="display: none;">
+        <div class="letter-card">
+            <h2 style="color: #d4af37; letter-spacing: 2px;">HAPPY MOTHER'S DAY</h2>
+            <h1 style="color: #5a4a42;">For you, Amma</h1>
+            
+            <div id="envelope" onclick="openLetter()" style="cursor:pointer; font-size: 80px; animation: pulse 2s infinite;">💌</div>
 
+            <div id="letter-content">
+                <div id="final-letter" style="display: none;">
+        <div class="letter-card">
+            <h2 style="color: #d4af37; letter-spacing: 2px; font-weight: normal;">HAPPY MOTHER'S DAY</h2>
+            <h1 style="color: #5a4a42; margin-top: 0;">For you, Amma</h1>
+            
+            <div id="envelope" onclick="openLetter()" style="cursor:pointer; font-size: 80px; margin: 20px 0; animation: pulse 2s infinite;">
+                💌
+                <p style="font-size: 1rem; color: #d4af37; font-family: sans-serif; font-weight: bold;">Tap to open</p>
+            </div>
+
+            <div id="letter-content" style="display: none; opacity: 0; transition: opacity 1s;">
+                <p style="text-align: justify; line-height: 1.8; color: #4a4a4a; font-size: 1.1rem; font-family: 'Arial', sans-serif;">
+                    అమ్మా, ఈ ఉదయం అంతా నీ గురించే ఆలోచిస్తూ, నీ రోజును మరింత ప్రత్యేకం చేయడానికి ఈ చిన్న సర్‌ప్రైజ్ పంపిస్తున్నాను. 
+                    ఈ చిన్న కానుక నీ ముఖంపై చిరునవ్వును నింపుతుందని ఆశిస్తున్నాను. 
+                    మన కుటుంబం కోసం నువ్వు చేసే ప్రతిదానికి నీకు చాలా కృతజ్ఞతలు. 
+                    నీ ప్రేమ, మద్దతు నాకు ప్రపంచంతో సమానం. నిన్ను నా జీవితంలో కలిగి ఉండటం నా అదృష్టం. 
+                    నా జీవితంలో జరిగిన అత్యంత ఉత్తమమైన విషయం నువ్వే!
+                </p>
+                <p style="font-weight: bold; color: #d4af37; font-size: 1.2rem;">Love you, Amma! ❤️</p>
+                <div style="font-size: 30px;">🙏💐</div>
+            </div>
+        </div>
+    </div>
     <script>
-        // FIXED: Using your actual filenames from the folder
         const photos = [
-            { src: "photo1.jpeg", msg: "Our favorite memory!" },
-            { src: "photo3.jpeg", msg: "You look like a Diva here! ✨" },
-            { src: "photo2.jpeg", msg: "Growing up with you is my fav part!" },
-            { src: "photo4.jpeg", msg: "Throwback to this special day 📸" },
-            { src: "photo5.jpeg", msg: "Love you forever, Amma!" }
+            { src: "photo1.jpeg", msg: "మనకెంతో ఇష్టమైన జ్ఞాపకం! ✨" },
+            { src: "photo2.jpeg", msg: "నువ్వు ఇందులో దేవతలా ఉన్నావు అమ్మా! 💃" },
+            { src: "photo3.jpeg", msg: "నీ నీడలో పెరగడమే నా జీవితంలో అత్యంత సంతోషం! ❤️" },
+            { src: "photo4.jpeg", msg: "ఒక మధురమైన జ్ఞాపకం... 📸" },
+            { src: "photo5.jpeg", msg: "నిన్ను ఎప్పటికీ ప్రేమిస్తూనే ఉంటాను! 🌸" }
         ];
 
         let currentPhotoIndex = 0;
 
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            createBalloons();
-        }
-
-        function createBalloons() {
-            const gameArea = document.getElementById('game-area');
-            gameArea.innerHTML = ""; // Clear area
-            for (let i = 0; i < photos.length; i++) {
-                let b = document.createElement('div');
-                b.className = 'balloon';
-                // Spread balloons across screen
-                b.style.left = (10 + (i * 18)) + '%'; 
-                b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`;
-                b.style.animationDelay = (i * 0.5) + 's';
-                b.onclick = () => popBalloon(b);
-                gameArea.appendChild(b);
+        // Create Background Floating Sparkles
+        function createBG() {
+            const layer = document.getElementById('bg-layer');
+            const items = ['🎈', '✨', '🌸', '✨'];
+            for(let i=0; i<20; i++) {
+                let div = document.createElement('div');
+                div.className = 'bg-element';
+                div.innerText = items[Math.floor(Math.random()*items.length)];
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                div.style.animationDelay = (Math.random() * 10) + 's';
+                layer.appendChild(div);
             }
         }
+        createBG();
 
-        function popBalloon(element) {
-            element.style.visibility = 'hidden';
-            const card = document.getElementById('photo-reveal');
-            document.getElementById('current-img').src = photos[currentPhotoIndex].src;
-            document.getElementById('caption').innerText = photos[currentPhotoIndex].msg;
-            card.style.display = 'block';
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            spawnBalloons();
+        }
+
+        function spawnBalloons() {
+            const area = document.getElementById('game-area');
+            photos.forEach((p, i) => {
+                let b = document.createElement('div');
+                b.className = 'game-balloon';
+                b.style.left = (15 + (i * 15)) + '%';
+                b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
+                
+                let pos = -100;
+                let interval = setInterval(() => {
+                    pos += 2;
+                    b.style.bottom = pos + 'px';
+                    if (pos > window.innerHeight) pos = -100;
+                }, 20);
+
+                b.onclick = () => {
+                    clearInterval(interval);
+                    b.remove();
+                    showPhoto(p);
+                };
+                area.appendChild(b);
+            });
+        }
+
+        function showPhoto(data) {
+            document.getElementById('current-img').src = data.src;
+            document.getElementById('caption').innerText = data.msg;
+            document.getElementById('photo-reveal').style.display = 'block';
         }
 
         function nextStep() {
-            const card = document.getElementById('photo-reveal');
-            card.style.display = 'none';
+            document.getElementById('photo-reveal').style.display = 'none';
             currentPhotoIndex++;
-            
             if (currentPhotoIndex === photos.length) {
-                showLetter();
+                document.getElementById('game-area').style.display = 'none';
+                document.getElementById('final-letter').style.display = 'flex';
             }
         }
 
-        function showLetter() {
-            document.getElementById('game-area').style.display = 'none';
-            document.getElementById('final-letter').style.display = 'block';
-            document.body.style.overflow = 'auto'; // Allow scrolling for the letter
+        function openLetter() {
+            document.getElementById('envelope').style.display = 'none';
+            const content = document.getElementById('letter-content');
+            content.style.display = 'block';
+            setTimeout(() => content.style.opacity = '1', 50);
+        }
+        function openLetter() {
+            // Hide the envelope emoji
+            document.getElementById('envelope').style.display = 'none';
+            
+            // Show the letter div
+            const content = document.getElementById('letter-content');
+            content.style.display = 'block';
+            
+            // Trigger the fade-in effect
+            setTimeout(() => {
+                content.style.opacity = '1';
+            }, 50);
         }
     </script>
 </body>
