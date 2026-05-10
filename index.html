@@ -11,13 +11,12 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            /* Light Pink & Gold Gradient */
             background: linear-gradient(135deg, #fff0f5 0%, #fdfcf0 100%);
-            font-family: 'Georgia', serif;
+            font-family: 'Georgia', 'Nirmala UI', serif; /* Nirmala UI for Telugu support */
             overflow: hidden;
         }
 
-        /* Floating Background Elements (Ballons/Sparkles) */
+        /* Floating Background Elements */
         .bg-element {
             position: absolute;
             user-select: none;
@@ -31,7 +30,6 @@
             100% { transform: translateY(-20vh) rotate(360deg); }
         }
 
-        /* Screens */
         #start-screen, #final-letter {
             position: relative;
             z-index: 10;
@@ -50,11 +48,10 @@
             display: none;
         }
 
-        /* Buttons */
         button {
             padding: 15px 35px;
             font-size: 1.2rem;
-            background: linear-gradient(45deg, #d4af37, #f9e27d); /* Gold Gradient */
+            background: linear-gradient(45deg, #d4af37, #f9e27d);
             color: #5a4a42;
             border: none;
             border-radius: 50px;
@@ -63,43 +60,40 @@
             font-weight: bold;
             transition: transform 0.2s;
         }
-        button:hover { transform: scale(1.05); }
 
-        /* Game Balloons */
+        /* FIXED: Balloon Visuals */
         .balloon {
-         width: 60px;
-         height: 75px;
-         background: #ff6b6b;
-         border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; /* This gives it the balloon shape */
-         position: absolute;
-         bottom: -100px;
-         cursor: pointer;
-         box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1); /* Adds depth */
-         }
-
-/* The string of the balloon */
-         .balloon::after {
-         content: "";
-         position: absolute;
-         bottom: -25px;
-         left: 30px;
-         height: 25px;
-         width: 1px;
-         background: rgba(0,0,0,0.2);
-         }
-
-/* The little knot at the bottom */
-        .balloon::before {
-        content: "";
-        position: absolute;
-        bottom: -2px;
-        left: 26px;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-bottom: 6px solid inherit; /* Match the balloon color */
+            width: 70px;
+            height: 90px;
+            background: #ff6b6b;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: absolute;
+            bottom: -150px;
+            cursor: pointer;
+            box-shadow: inset -10px -10px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
 
-        /* The Letter Card */
+        .balloon::before {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 31px;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 8px solid rgba(0,0,0,0.3);
+        }
+
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -40px;
+            left: 34px;
+            width: 1px;
+            height: 40px;
+            background: rgba(0,0,0,0.2);
+        }
+
         .letter-card {
             background: white;
             max-width: 85%;
@@ -107,7 +101,7 @@
             padding: 40px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            border: 2px solid #f9e27d; /* Gold Border */
+            border: 2px solid #f9e27d;
         }
 
         #letter-content {
@@ -128,6 +122,12 @@
             box-shadow: 0 0 30px rgba(0,0,0,0.2);
         }
         .photo-popup img { max-width: 280px; border-radius: 10px; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -136,7 +136,7 @@
 
     <div id="start-screen">
         <h1 style="color: #d4af37;">Hii Amma! ❤️</h1>
-        <p style="color: #a38d81;">మీ కోసం ఒక చిన్న సర్‌ప్రైజ్...</p>
+        <p style="color: #a38d81; font-family: 'Nirmala UI', sans-serif;">మీ కోసం ఒక చిన్న సర్‌ప్రైజ్...</p>
         <button onclick="startGame()">Start the Magic ✨</button>
     </div>
 
@@ -144,56 +144,48 @@
 
     <div id="photo-reveal" class="photo-popup">
         <img id="current-img" src="" alt="Memory">
-        <p id="caption" style="font-style: italic; color: #5a4a42;"></p>
+        <p id="caption" style="font-style: italic; color: #5a4a42; margin: 10px 0;"></p>
         <button onclick="nextStep()" style="font-size: 0.9rem; padding: 10px 20px;">Next Balloon 🎈</button>
     </div>
 
     <div id="final-letter" style="display: none;">
         <div class="letter-card">
-            <h2 style="color: #d4af37; letter-spacing: 2px;">HAPPY MOTHER'S DAY</h2>
-            <h1 style="color: #5a4a42;">For you, Amma</h1>
-            
-            <div id="envelope" onclick="openLetter()" style="cursor:pointer; font-size: 80px; animation: pulse 2s infinite;">💌</div>
-
-            <div id="letter-content">
-                <div id="final-letter" style="display: none;">
-        <div class="letter-card">
-            <h2 style="color: #d4af37; letter-spacing: 2px; font-weight: normal;">HAPPY MOTHER'S DAY</h2>
-            <h1 style="color: #5a4a42; margin-top: 0;">For you, Amma</h1>
+            <h2 style="color: #d4af37; letter-spacing: 2px; font-weight: normal; margin: 0;">HAPPY MOTHER'S DAY</h2>
+            <h1 style="color: #5a4a42; margin-top: 5px;">For you, Amma</h1>
             
             <div id="envelope" onclick="openLetter()" style="cursor:pointer; font-size: 80px; margin: 20px 0; animation: pulse 2s infinite;">
                 💌
-                <p style="font-size: 1rem; color: #d4af37; font-family: sans-serif; font-weight: bold;">Tap to open</p>
+                <p style="font-size: 1rem; color: #d4af37; font-family: sans-serif; font-weight: bold; margin: 0;">Tap to open</p>
             </div>
 
-            <div id="letter-content" style="display: none; opacity: 0; transition: opacity 1s;">
-                <p style="text-align: justify; line-height: 1.8; color: #4a4a4a; font-size: 1.1rem; font-family: 'Georgia', 'Nirmala UI', serif;">
+            <div id="letter-content">
+                <p style="text-align: justify; line-height: 1.8; color: #4a4a4a; font-size: 1.05rem; font-family: 'Nirmala UI', serif;">
                     అమ్మా, ఈ ఉదయం అంతా నీ గురించే ఆలోచిస్తూ, నీ రోజును మరింత ప్రత్యేకం చేయడానికి ఈ చిన్న సర్‌ప్రైజ్ పంపిస్తున్నాను. 
                     ఈ చిన్న కానుక నీ ముఖంపై చిరునవ్వును నింపుతుందని ఆశిస్తున్నాను. 
                     మన కుటుంబం కోసం నువ్వు చేసే ప్రతిదానికి నీకు చాలా కృతజ్ఞతలు. 
                     నీ ప్రేమ, మద్దతు నాకు ప్రపంచంతో సమానం. నిన్ను నా జీవితంలో కలిగి ఉండటం నా అదృష్టం. 
                     నా జీవితంలో జరిగిన అత్యంత ఉత్తమమైన విషయం నువ్వే!
                 </p>
-                <p style="font-weight: bold; color: #d4af37; font-size: 1.2rem;">Love you, Amma! ❤️</p>
+                <p style="font-weight: bold; color: #d4af37; font-size: 1.2rem; margin: 10px 0;">Love you, Amma! ❤️</p>
                 <div style="font-size: 30px;">💐</div>
             </div>
         </div>
     </div>
+
     <script>
         const photos = [
             { src: "photo1.jpeg", msg: "మనకెంతో ఇష్టమైన జ్ఞాపకం! ✨" },
-            { src: "photo2.jpeg", msg: "నువ్వు ఇందులో దేవతలా ఉన్నావు అమ్మా! 💃" },
-            { src: "photo3.jpeg", msg: "నీ నీడలో పెరగడమే నా జీవితంలో అత్యంత సంతోషం! ❤️" },
+            { src: "photo2.jpeg", msg: "నువ్వు ఇందులో దేవతలా ఉన్నావ్ అమ్మ 💃" },
+            { src: "photo3.jpeg", msg: "నీ నీడలో పెరగడం నా జీవితంలో సంతోషం ❤️" },
             { src: "photo4.jpeg", msg: "ఒక మధురమైన జ్ఞాపకం... 📸" },
-            { src: "photo5.jpeg", msg: "నిన్ను ఎప్పటికీ ప్రేమిస్తూనే ఉంటాను! 🌸" }
+            { src: "photo5.jpeg", msg: "నిన్ను ఎప్పటికి ప్రేమిస్తూ ఉంటాను! 🌸" }
         ];
 
         let currentPhotoIndex = 0;
 
-        // Create Background Floating Sparkles
         function createBG() {
             const layer = document.getElementById('bg-layer');
-            const items = ['🎈', '✨', '🌸', '✨'];
+            const items = ['🎈', '✨', '🌸', '💖'];
             for(let i=0; i<20; i++) {
                 let div = document.createElement('div');
                 div.className = 'bg-element';
@@ -214,17 +206,20 @@
 
         function spawnBalloons() {
             const area = document.getElementById('game-area');
+            const colors = ['#ff6b6b', '#ff9f43', '#feca57', '#48dbfb', '#ff9ff3'];
+            
             photos.forEach((p, i) => {
                 let b = document.createElement('div');
-                b.className = 'game-balloon';
+                b.className = 'balloon';
                 b.style.left = (15 + (i * 15)) + '%';
-                b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
+                b.style.backgroundColor = colors[i % colors.length];
                 
-                let pos = -100;
+                let pos = -150;
+                let speed = 1.5 + Math.random();
                 let interval = setInterval(() => {
-                    pos += 2;
+                    pos += speed;
                     b.style.bottom = pos + 'px';
-                    if (pos > window.innerHeight) pos = -100;
+                    if (pos > window.innerHeight) pos = -150;
                 }, 20);
 
                 b.onclick = () => {
@@ -256,19 +251,6 @@
             const content = document.getElementById('letter-content');
             content.style.display = 'block';
             setTimeout(() => content.style.opacity = '1', 50);
-        }
-        function openLetter() {
-            // Hide the envelope emoji
-            document.getElementById('envelope').style.display = 'none';
-            
-            // Show the letter div
-            const content = document.getElementById('letter-content');
-            content.style.display = 'block';
-            
-            // Trigger the fade-in effect
-            setTimeout(() => {
-                content.style.opacity = '1';
-            }, 50);
         }
     </script>
 </body>
